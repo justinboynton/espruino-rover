@@ -5,10 +5,10 @@ describe("Rover", function() {
     rover = new Rover();
     // mock our Espruino functions
     digitalWrite = jasmine.createSpy();
-    eyes = function() { };
-    eyes.move = jasmine.createSpy();
-    sensor = function() { };
-    sensor.trigger = jasmine.createSpy();
+    rover.eyes = function() { };
+    rover.eyes.move = jasmine.createSpy();
+    rover.sensor = function() { };
+    rover.sensor.trigger = jasmine.createSpy();
   });
 
   it("should be able to move forwards", function() {
@@ -64,19 +64,19 @@ describe("Rover", function() {
 
   it("should be able to look left", function() {
     rover.lookLeft();
-    expect(eyes.move).toHaveBeenCalled();
+    expect(rover.eyes.move).toHaveBeenCalled();
     expect(rover.currentLeftDistance).toBeDefined();
   });
 
   it("should be able to look right", function() {
     rover.lookRight();
-    expect(eyes.move).toHaveBeenCalled();
+    expect(rover.eyes.move).toHaveBeenCalled();
     expect(rover.currentRightDistance).toBeDefined();
   });
 
   it("should be able to look ahead", function() {
     rover.lookAhead();
-    expect(eyes.move).toHaveBeenCalled();
+    expect(rover.eyes.move).toHaveBeenCalled();
     expect(rover.currentForwardDistance).toBeDefined();
   });
 

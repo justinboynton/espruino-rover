@@ -2,7 +2,9 @@ function Rover() {
   this.currentLeftDistance;
   this.accumulatedDistance = 0;
   this.thnkingCount = 1;
-}
+  this.eyes;
+  this.sensor;
+};
 Rover.prototype.moveForward = function() {
   this.stop();
   this.currentMovingStatus = "moving";
@@ -59,25 +61,37 @@ Rover.prototype.resume = function() {
 };
 Rover.prototype.lookLeft = function() {
   this.currentLeftDistance = 0;
-  eyes.move(0);
+  this.eyes.move(0);
   this.watch();
   setTimeout(function() { this.currentLeftDistance = this.accumulatedDistance / this.thinkingCount; }, 1000);
 };
 Rover.prototype.lookRight = function() {
   this.currentRightDistance = 0;
-  eyes.move(1);
+  this.eyes.move(1);
   this.watch();
   setTimeout(function() { this.currentRightDistance = this.accumulatedDistance / this.thinkingCount; }, 1000);
 };
 Rover.prototype.lookAhead = function() {
   this.currentForwardDistance = 0;
-  eyes.move(1);
+  this.eyes.move(1);
   this.watch();
   setTimeout(function() { this.currentForwardDistance = this.accumulatedDistance / this.thinkingCount; }, 1000);
 };
 Rover.prototype.watch = function() {
   this.accumulatedDistance = 0;
   this.thinkingCount = 1;
-  this.watchInterval  = setInterval(sensor.trigger(), 50);
+  this.watchInterval  = setInterval(this.sensor.trigger(), 50);
   setTimeout(function() { clearInterval(this.watchInterval); }, 1000);
+};
+Rover.prototype.onInit = function() {
+ this.eyes = require("servo").connect(B15);
+ this.eyes.move(0.5);
+ this.sensor = require("HC-SR04").connect(A15,A14,function(dist) {
+   this.accumulatedDistance += dist;
+   this.thinkingCount++;
+   if(dist < 15 && this.thinking && this.currentMovingStatus == 'moving')
+   {
+     this.stop();
+   }
+ });
 };
